@@ -49,8 +49,8 @@ void PrintFlightSummary(const FlightState& state) {
 
     std::cout << "=== Flight summary for plane " << state.planeId << " ===\n";
     std::cout << "Samples: " << state.sampleCount << "\n";
-    std::cout << "Start timestamp: " << state.firstTimestamp << "\n";
-    std::cout << "End timestamp:   " << state.lastTimestamp << "\n";
+    std::cout << "Start timestamp: (In seconds since epoch UTC) " << state.firstTimestamp << "\n";
+    std::cout << "End timestamp: (In seconds since epoch UTC) " << state.lastTimestamp << "\n";
     std::cout << std::fixed << std::setprecision(4);
     std::cout << "Total flight time: " << totalSeconds << " seconds (" << hours << " hours)\n";
     std::cout << std::setprecision(6);
