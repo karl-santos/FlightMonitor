@@ -24,6 +24,13 @@ typedef struct {
     float    fuel;         // gallons remaining
 } TelemetryPayload;
 
+// Full telemetry packet (19 bytes total)
+typedef struct {
+    PacketHeader    header;
+    TelemetryPayload payload;
+} TelemetryPacket;
+
+
 
 #pragma pack(pop)
 
