@@ -15,8 +15,8 @@ class Client {
 public:
 
 
-	Client(const std::string& serverIP, int port, int planeID, const std::string& dataFile);
-	~Client();
+    Client(const std::string& serverIP, int port, uint32_t planeID, const std::string& dataFile);
+    ~Client();
 
 	bool run();
 
