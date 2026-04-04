@@ -18,12 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="fakeServer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Client\protocol.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
