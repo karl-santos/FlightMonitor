@@ -54,7 +54,7 @@ static bool ValidateTimestamp(uint64_t timestamp)
 
 static bool ValidateFuel(float fuel)
 {
-    return fuel >= 0.0f && fuel <= 100.0f;
+    return fuel >= 0.0f && fuel <= 100000.0f;
 }
 
 // Build structured internal record from incoming data
@@ -154,11 +154,11 @@ bool HandleTelemetryMessage(SOCKET clientSocket, uint32_t planeId)
     // Forward valid telemetry to flight calculation in real time
     AddTelemetrySample(g_activeFlights[record.planeId], record.timestamp, record.fuel);
 
-    cout << "[Serialization] Telemetry accepted for plane "
+    /*cout << "[Serialization] Telemetry accepted for plane "
         << record.planeId
         << " | Fuel: " << record.fuel
         << " | Time: " << record.timestamp
-        << "\n";
+        << "\n";*/
 
     return true;
 }
