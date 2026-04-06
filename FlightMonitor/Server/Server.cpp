@@ -54,7 +54,7 @@ static bool ValidateTimestamp(uint64_t timestamp)
 
 static bool ValidateFuel(float fuel)
 {
-    return fuel >= 0.0f && fuel <= 100.0f;
+    return fuel >= 0.0f && fuel <= 100000.0f;
 }
 
 // Build structured internal record from incoming data
