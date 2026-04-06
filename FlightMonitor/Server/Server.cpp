@@ -99,7 +99,7 @@ void clientHandler(SOCKET clientSocket)
 }
 
 
-int Main()
+int main()
 {
     WSADATA wsaData;
 
