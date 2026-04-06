@@ -5,6 +5,8 @@
 #include <cstring>
 #include <ctime>
 
+#pragma comment(lib, "ws2_32.lib")
+
 
 Client::Client(const std::string& serverIP, int port,
     uint32_t planeID, const std::string& dataFile)
