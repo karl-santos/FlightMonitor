@@ -18,12 +18,12 @@
     <ClCompile Include="Server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Calcflight.cpp">
+    <ClCompile Include="flightcalc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Calcflight.h">
+    <ClInclude Include="flightcalc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
