@@ -4,8 +4,6 @@
 #include <sstream>
 #include <cstring>
 #include <ctime>
-#include <thread>
-#include <chrono>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -126,7 +124,6 @@ bool Client::runFlightLoop() {
             std::cerr << "[" << planeID_ << "] Socket error during transmit\n";
             break;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     file.close();
