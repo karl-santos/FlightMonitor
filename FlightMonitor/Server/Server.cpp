@@ -154,11 +154,11 @@ bool HandleTelemetryMessage(SOCKET clientSocket, uint32_t planeId)
     // Forward valid telemetry to flight calculation in real time
     AddTelemetrySample(g_activeFlights[record.planeId], record.timestamp, record.fuel);
 
-    cout << "[Serialization] Telemetry accepted for plane "
+    /*cout << "[Serialization] Telemetry accepted for plane "
         << record.planeId
         << " | Fuel: " << record.fuel
         << " | Time: " << record.timestamp
-        << "\n";
+        << "\n";*/
 
     return true;
 }
