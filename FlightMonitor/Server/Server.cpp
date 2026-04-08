@@ -226,7 +226,8 @@ void clientHandler(SOCKET clientSocket)
         case MSG_FLIGHT_END:
             cout << "[Plane " << header.planeID << "] FLIGHT END\n";
             HandleFlightEnd(header.planeID);
-            return;
+            //return;
+            break;
 
         default:
             cout << "Unknown message type: " << (int)header.msgType << "\n";
