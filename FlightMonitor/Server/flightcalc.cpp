@@ -3,6 +3,12 @@
 #include <iostream>
 #include <iomanip>
 
+/// @file flightcalc.cpp
+/// @brief Implements flight state tracking and summary reporting for incoming telemetry data.
+
+/// @brief Initializes a FlightState to a clean starting state.
+/// @param state   The FlightState to initialize.
+/// @param planeId The unique ID of the plane this state belongs to.
 void InitializeFlightState(FlightState& state, uint32_t planeId) {
     state.planeId = planeId;
     state.hasFirstSample = false;
@@ -13,6 +19,12 @@ void InitializeFlightState(FlightState& state, uint32_t planeId) {
     state.sampleCount = 0;
 }
 
+/// @brief Adds a telemetry sample to an active flight state.
+///
+/// Updates the first and last timestamps and fuel values as samples arrive.
+/// @param state     The FlightState to update.
+/// @param timestamp Unix epoch timestamp (UTC) of the sample.
+/// @param fuel      Fuel remaining in gallons at the time of the sample.
 void AddTelemetrySample(FlightState& state, uint64_t timestamp, float fuel) {
     if (!state.hasFirstSample) {
         state.firstTimestamp = timestamp;
@@ -31,6 +43,11 @@ void AddTelemetrySample(FlightState& state, uint64_t timestamp, float fuel) {
     state.sampleCount++;
 }
 
+/// @brief Prints a summary of the completed flight to standard output.
+///
+/// Calculates and displays total flight duration, fuel used, and average
+/// fuel consumption per hour. Requires at least 2 samples to produce a result.
+/// @param state The FlightState containing the accumulated flight data.
 void PrintFlightSummary(const FlightState& state) {
     if (!state.hasFirstSample || state.sampleCount < 2) {
         std::cout << "[Plane " << state.planeId << "] Not enough data to compute flight metrics (samples=" << state.sampleCount << ").\n";
