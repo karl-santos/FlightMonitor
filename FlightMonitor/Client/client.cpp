@@ -4,13 +4,19 @@
 #include <sstream>
 #include <cstring>
 #include <ctime>
-
 #include <chrono>
 #include <thread>
 
+/// @file client.cpp
+/// @brief Implements the Client class: connection, file reading, packetizing, and transmission.
+
 #pragma comment(lib, "ws2_32.lib")
 
-
+/// @brief Constructs a Client with the given connection and flight parameters.
+/// @param serverIP  IP address of the server to connect to.
+/// @param port      TCP port the server is listening on.
+/// @param planeID   Unique identifier for this plane (typically the process ID).
+/// @param dataFile  Path to the telemetry CSV file to stream.
 Client::Client(const std::string& serverIP, int port,
     uint32_t planeID, const std::string& dataFile)
     : serverIP_(serverIP), port_(port),
@@ -19,12 +25,13 @@ Client::Client(const std::string& serverIP, int port,
 {
 }
 
+/// @brief Destructor. Closes the socket if still open.
 Client::~Client() {
     disconnect();
 }
 
-
-// Startup module
+/// @brief Runs the full flight session: connect, stream telemetry, disconnect.
+/// @return True if the session completed successfully, false on any error.
 bool Client::run() {
     if (!connectToServer()) return false;
 
@@ -47,6 +54,8 @@ bool Client::run() {
     return true;
 }
 
+/// @brief Establishes a TCP connection to the server.
+/// @return True if the connection was successful, false otherwise.
 bool Client::connectToServer() {
     WSADATA wsa;
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
@@ -78,8 +87,11 @@ bool Client::connectToServer() {
     return true;
 }
 
-
-// File reader module
+/// @brief Reads the telemetry file line by line and transmits each reading.
+///
+/// Parses each line for a timestamp and fuel value, builds a telemetry
+/// packet, and transmits it. Sleeps 5ms between packets.
+/// @return True if the file was read to completion, false on a socket error.
 bool Client::runFlightLoop() {
     std::ifstream file(dataFile_);
     if (!file.is_open()) {
@@ -134,18 +146,17 @@ bool Client::runFlightLoop() {
     return true;
 }
 
-
-
-// Helper: parse "12_3_2023 14:56:47" -> unix epoch uint64_t
+/// @brief Parses a timestamp string into a Unix epoch value.
+/// @param ts Timestamp string in "DD_M_YYYY HH:MM:SS" format.
+/// @return Unix epoch time in seconds as a uint64_t.
 uint64_t Client::parseTimestamp(const std::string& ts) {
-    // format: DD_M_YYYY HH:MM:SS
     int day = 0, month = 0, year = 0, hour = 0, min = 0, sec = 0;
     sscanf_s(ts.c_str(), "%d_%d_%d %d:%d:%d",
         &day, &month, &year, &hour, &min, &sec);
 
     struct tm t {};
     t.tm_mday = day;
-    t.tm_mon = month - 1;  // tm_mon is 0-indexed
+    t.tm_mon = month - 1;
     t.tm_year = year - 1900;
     t.tm_hour = hour;
     t.tm_min = min;
@@ -155,9 +166,10 @@ uint64_t Client::parseTimestamp(const std::string& ts) {
     return static_cast<uint64_t>(mktime(&t));
 }
 
-
-
-// Packetizer module
+/// @brief Builds a complete telemetry packet from a timestamp and fuel value.
+/// @param timestamp Unix epoch timestamp (UTC) of the reading.
+/// @param fuel      Fuel remaining in gallons.
+/// @return A fully populated TelemetryPacket ready to transmit.
 TelemetryPacket Client::buildTelemetryPacket(uint64_t timestamp, float fuel) {
     TelemetryPacket pkt{};
     pkt.header.length = sizeof(TelemetryPacket);
@@ -168,6 +180,9 @@ TelemetryPacket Client::buildTelemetryPacket(uint64_t timestamp, float fuel) {
     return pkt;
 }
 
+/// @brief Builds a control packet (FLIGHT_START or FLIGHT_END) with no payload.
+/// @param msgType The message type: MSG_FLIGHT_START or MSG_FLIGHT_END.
+/// @return A fully populated PacketHeader ready to transmit.
 PacketHeader Client::buildControlPacket(uint8_t msgType) {
     PacketHeader hdr{};
     hdr.length = sizeof(PacketHeader);
@@ -176,8 +191,10 @@ PacketHeader Client::buildControlPacket(uint8_t msgType) {
     return hdr;
 }
 
-
-// Transmitter module
+/// @brief Transmits raw bytes over the TCP socket, retrying until all bytes are sent.
+/// @param data Pointer to the data buffer to send.
+/// @param size Number of bytes to send.
+/// @return True if all bytes were sent successfully, false on a socket error.
 bool Client::transmit(const void* data, int size) {
     const char* ptr = reinterpret_cast<const char*>(data);
     int remaining = size;
@@ -190,6 +207,7 @@ bool Client::transmit(const void* data, int size) {
     return true;
 }
 
+/// @brief Closes the TCP socket and cleans up Winsock.
 void Client::disconnect() {
     if (sock_ != INVALID_SOCKET) {
         closesocket(sock_);
