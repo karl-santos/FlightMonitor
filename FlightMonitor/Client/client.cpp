@@ -127,7 +127,7 @@ bool Client::runFlightLoop() {
             std::cerr << "[" << planeID_ << "] Socket error during transmit\n";
             break;
         }
-        //std::this_thread::sleep_for(5ms);
+        std::this_thread::sleep_for(5ms);
     }
 
     file.close();
